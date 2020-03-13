@@ -19,7 +19,7 @@ router.get("/", (req, res) => {
     });
 });
 
-router.get("/:id", (req, res) => {
+router.get("/:id", validateActionId, (req, res) => {
   const id = req.params.id;
   Action.get(id)
     .then((action) => {
@@ -31,7 +31,7 @@ router.get("/:id", (req, res) => {
     });
 });
 
-router.delete("/:id", (req, res) => {
+router.delete("/:id", validateActionId, (req, res) => {
   const id = req.params.id;
   Action.remove(id)
     .then((action) => {
@@ -43,7 +43,7 @@ router.delete("/:id", (req, res) => {
     });
 });
 
-router.put("/:id", (req, res) => {
+router.put("/:id", validateActionId, validateAction, (req, res) => {
   const id = req.params.id;
   const edits = req.body;
   Action.update(id, edits)
@@ -55,5 +55,34 @@ router.put("/:id", (req, res) => {
       res.status(500).json({ message: "Error updating action" });
     });
 });
+
+// ----- Middleware ------ //
+
+function validateActionId(req, res, next) {
+  const id = req.params.id;
+  Action.get(id)
+    .then((action) => {
+      if (action) {
+        req.action = action;
+        next();
+      } else {
+        res.status(400).json({ message: "Cannot find action with this id" });
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json({ message: "Error validating action information" });
+    });
+}
+function validateAction(req, res, next) {
+  const body = req.body;
+  if (Object.keys(body).length === 0) {
+    res.status(400).json({ message: "Missing action data" });
+  } else if (!body.description || !body.notes) {
+    res.status(400).json({ message: "Missing required fields" });
+  } else {
+    next();
+  }
+}
 
 module.exports = router;

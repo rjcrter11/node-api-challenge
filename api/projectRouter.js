@@ -20,7 +20,7 @@ router.get("/", (req, res) => {
     });
 });
 
-router.get("/:id", (req, res) => {
+router.get("/:id", validateProjectId, (req, res) => {
   id = req.params.id;
   Project.get(id)
     .then((project) => {
@@ -32,7 +32,7 @@ router.get("/:id", (req, res) => {
     });
 });
 
-router.get("/:id/actions", (req, res) => {
+router.get("/:id/actions", validateProjectId, (req, res) => {
   id = req.params.id;
   Project.getProjectActions(id)
     .then((actions) => {
@@ -44,7 +44,7 @@ router.get("/:id/actions", (req, res) => {
     });
 });
 
-router.post("/", (req, res) => {
+router.post("/", validtateProject, (req, res) => {
   const body = req.body;
   Project.insert(body)
     .then((project) => {
@@ -56,7 +56,7 @@ router.post("/", (req, res) => {
     });
 });
 
-router.post("/:id/actions", (req, res) => {
+router.post("/:id/actions", validateProjectId, validateAction, (req, res) => {
   const action = { ...req.body, project_id: req.params.id };
   Action.insert(action)
     .then((action) => {
@@ -68,7 +68,7 @@ router.post("/:id/actions", (req, res) => {
     });
 });
 
-router.delete("/:id", (req, res) => {
+router.delete("/:id", validateProjectId, (req, res) => {
   id = req.params.id;
   Project.remove(id)
     .then((project) => {
@@ -80,7 +80,7 @@ router.delete("/:id", (req, res) => {
     });
 });
 
-router.put("/:id", (req, res) => {
+router.put("/:id", validtateProject, (req, res) => {
   const id = req.params.id;
   const edits = req.body;
   //const updatedProject = { ...edits, id };
@@ -93,5 +93,46 @@ router.put("/:id", (req, res) => {
       res.status(500).json({ message: "Error updating project" });
     });
 });
+
+// ------ Middleware ------ //
+
+function validtateProject(req, res, next) {
+  const body = req.body;
+  if (Object.keys(body).length === 0) {
+    res.status(400).json({ message: "Missing project data" });
+  } else if (!body.name || !body.description) {
+    res.status(400).json({ message: "Missing required fields" });
+  } else {
+    next();
+  }
+}
+
+function validateProjectId(req, res, next) {
+  const id = req.params.id;
+  Project.get(id)
+    .then((project) => {
+      if (project) {
+        req.project = project;
+        next();
+      } else {
+        res.status(400).json({ message: "Cannot find project with this id" });
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json({ message: "Error validating project information" });
+    });
+}
+
+function validateAction(req, res, next) {
+  const body = req.body;
+  if (Object.keys(body).length === 0) {
+    res.status(400).json({ message: "Missing action data" });
+  } else if (!body.description || !body.notes) {
+    res.status(400).json({ message: "Missing required fields" });
+  } else {
+    next();
+  }
+}
 
 module.exports = router;
