@@ -1,38 +1,137 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 .App {
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+th,
+td {
+  padding: 4% 8%;
+  text-align: left;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+table {
+  border-collapse: collapse;
+  margin: 0 auto;
+  width: 50%;
+  padding: 5% 0;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+.project-name {
+  cursor: pointer;
+}
+
+.form {
+  margin: 0 auto;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+
+  width: 40%;
+  padding: 4% 2%;
+  box-shadow: 1px 1px 1px 1px gray;
+}
+.form input {
+  padding: 1% 0;
+  margin-bottom: 4%;
+}
+.form label {
+  text-align: left;
+}
+.form button {
+  padding: 2%;
+  border-radius: 5px;
+  font-size: 1rem;
+  letter-spacing: 0.1rem;
+  cursor: pointer;
+}
+.form button:hover {
+  background-color: black;
   color: white;
 }
 
-.App-link {
-  color: #61dafb;
+.project {
+  margin: 6% auto;
+  width: 45%;
+  padding: 3% 2%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid black;
+}
+.delete-container {
+  width: 40%;
+  display: flex;
+  justify-content: flex-end;
+}
+/* .delete-container button {
+  width: 60%;
+  padding: 3% 2%;
+  border-radius: 5px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+.delete-container button:hover {
+  background-color: red;
+  color: white;
+} */
+
+.action-container {
+  padding: 2% 2%;
+  width: 100%;
+  margin: 0 auto;
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.action {
+  padding: 3% 0;
+  line-height: 1.5rem;
+  text-align: left;
+  width: 50%;
+  margin: 2% 0;
+  box-shadow: 1px 1px 1px 1px gray;
+}
+
+.list-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2% 2%;
+  background-color: rgba(187, 187, 187, 0.842);
+}
+
+.action-table {
+  width: 100%;
+}
+.action-table th,
+td {
+  text-align: center;
+}
+
+.action-box {
+  padding: 4% 3%;
+  text-align: left;
+  box-shadow: 1px 1px 1px 1px lavender;
+  width: 50%;
+  margin: 0 auto;
+  margin-top: 5%;
+}
+
+.action-box h4,
+p {
+  margin: 1% 0;
+}
+
+.btn-row {
+  margin-top: 4%;
 }
