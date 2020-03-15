@@ -54,7 +54,7 @@ function Action() {
 
   useEffect(() => {
     fetchAction();
-  }, [action.completed]);
+  }, []);
 
   const saveEdit = (e) => {
     e.preventDefault();
@@ -63,7 +63,7 @@ function Action() {
       .then((res) => {
         console.log(res);
         setOpen(false);
-        history.push(`/projects/${action.project_id}`);
+        history.push(`/projects/${action.project_id}/actions`);
         fetchAction();
       })
       .catch((err) => console.log(err));
@@ -74,14 +74,14 @@ function Action() {
       .delete(`http://localhost:5000/api/actions/${action.id}`)
       .then((res) => {
         console.log(res);
-        history.push(`/projects/${action.project_id}`);
+        history.push(`/projects/${action.project_id}/actions`);
       })
       .catch((err) => console.log(err));
   };
 
   const handlePush = (e, action) => {
     e.preventDefault();
-    history.push(`/projects/${action.project_id}`);
+    history.push(`/projects/${action.project_id}/actions`);
   };
 
   return (
@@ -168,7 +168,6 @@ function Action() {
               <FormControlLabel
                 control={
                   <Checkbox
-                    // checked={actionToEdit.completed}
                     onChange={(e) =>
                       setActionToEdit({
                         ...actionToEdit,

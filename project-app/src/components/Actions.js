@@ -4,6 +4,7 @@ import EditIcon from "@material-ui/icons/Edit";
 import { useHistory } from "react-router-dom";
 
 function Actions(props) {
+  console.log("log for props in actions.js", props);
   const history = useHistory();
 
   const routeToAction = (e, action) => {
@@ -33,10 +34,6 @@ function Actions(props) {
               <td> {act.notes} </td>
               <td> {act.completed ? "Complete" : "In Progress"} </td>
               <td>
-                {/* <div className="icon-div"> */}
-                {/* <IconButton aria-label="delete" onClick={props.deleteAction}>
-                    <DeleteIcon />
-                  </IconButton> */}
                 <IconButton
                   aria-label="edit"
                   onClick={(e) => routeToAction(e, act)}

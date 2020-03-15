@@ -4,6 +4,8 @@ import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Checkbox from "@material-ui/core/Checkbox";
 import TextField from "@material-ui/core/TextField";
 import { useParams, useHistory } from "react-router-dom";
 import axios from "axios";
@@ -12,16 +14,24 @@ import Actions from "../components/Actions";
 
 const initialAction = {
   description: "",
-  notes: ""
+  notes: "",
+  completed: false
+};
+const initialProject = {
+  name: "",
+  description: "",
+  completed: false
 };
 
 function Project() {
   const [project, setProject] = useState([]);
   const [actions, setActions] = useState([]);
   const [addAction, setAddAction] = useState(initialAction);
+  const [projectToEdit, setProjectToEdit] = useState(initialProject);
 
   const [open, setOpen] = useState(false);
   const [addOpen, setAddOpen] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -30,12 +40,18 @@ function Project() {
   const handleAddOpen = () => {
     setAddOpen(true);
   };
+  const handleEditOpen = () => {
+    setEditOpen(true);
+  };
 
   const handleClose = () => {
     setOpen(false);
   };
   const handleAddClose = () => {
     setAddOpen(false);
+  };
+  const handleEditClose = () => {
+    setEditOpen(false);
   };
   const pushHandler = (e) => {
     e.preventDefault();
@@ -49,17 +65,27 @@ function Project() {
 
   const fetchProject = () => {
     axios
-      .get(`http://localhost:5000/api/projects/${id}`)
+      .get(`http://localhost:5000/api/projects/${id}/`)
       .then((res) => {
         console.log(res);
         setProject(res.data);
-        setActions(res.data.actions);
+      })
+      .catch((err) => console.log(err));
+  };
+
+  const fetchActions = () => {
+    axios
+      .get(`http://localhost:5000/api/projects/${id}/actions`)
+      .then((res) => {
+        console.log(res);
+        setActions(res.data);
       })
       .catch((err) => console.log(err));
   };
 
   useEffect(() => {
     fetchProject();
+    fetchActions();
   }, []);
 
   const deleteProject = (project) => {
@@ -75,12 +101,25 @@ function Project() {
   const handleAddAction = (e) => {
     e.preventDefault();
     axios
-      .post(`http://localhost:5000/projects/${id}/actions`, addAction)
+      .post(`http://localhost:5000/api/projects/${id}/actions`, addAction)
       .then((res) => {
         console.log(res);
-
-        setAddOpen(false);
         fetchProject();
+        fetchActions();
+        setAddOpen(false);
+      })
+      .catch((err) => console.log(err));
+  };
+
+  const handleEdit = (e) => {
+    e.preventDefault();
+    axios
+      .put(`http://localhost:5000/api/projects/${id}`, projectToEdit)
+      .then((res) => {
+        console.log(res);
+        fetchProject();
+        fetchActions();
+        setEditOpen(false);
       })
       .catch((err) => console.log(err));
   };
@@ -121,6 +160,74 @@ function Project() {
                 autoFocus
               >
                 Delete
+              </Button>
+            </DialogActions>
+          </Dialog>
+        </div>
+        <div className="edit-container">
+          <Button variant="outlined" color="primary" onClick={handleEditOpen}>
+            Edit
+          </Button>
+          <Dialog
+            open={editOpen}
+            onClose={handleEditClose}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+          >
+            <DialogContent>
+              <DialogContentText>Edit your project here</DialogContentText>
+              <TextField
+                autoFocus
+                margin="dense"
+                id="projectDescription"
+                label="Project Name"
+                type="text"
+                value={projectToEdit.name}
+                onChange={(e) =>
+                  setProjectToEdit({
+                    ...projectToEdit,
+                    name: e.target.value
+                  })
+                }
+                fullWidth
+              />
+              <TextField
+                autoFocus
+                margin="dense"
+                id="projectNotes"
+                label="Notes for Action"
+                type="text"
+                value={projectToEdit.description}
+                onChange={(e) =>
+                  setProjectToEdit({
+                    ...projectToEdit,
+                    description: e.target.value
+                  })
+                }
+                fullWidth
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    onChange={(e) =>
+                      setProjectToEdit({
+                        ...projectToEdit,
+                        completed: e.target.checked
+                      })
+                    }
+                    value={projectToEdit.completed}
+                    color="primary"
+                  />
+                }
+                label="Completed?"
+              />
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleEditClose} color="primary">
+                Cancel
+              </Button>
+              <Button onClick={(handleEditClose, handleEdit)} color="primary">
+                Save Edit
               </Button>
             </DialogActions>
           </Dialog>

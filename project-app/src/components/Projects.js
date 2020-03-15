@@ -55,7 +55,7 @@ function Projects() {
 
   const routeToProject = (e, project) => {
     e.preventDefault();
-    history.push(`/projects/${project.id}`);
+    history.push(`/projects/${project.id}/actions`);
   };
 
   const handleSubmit = (e) => {
